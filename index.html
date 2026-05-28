@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Usy! 🎉</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Cinzel+Decorative:wght@700;900&family=Great+Vibes&family=Montserrat:wght@200;300;400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black: #04060e;
+  --deep: #080c1a;
+  --navy: #0d1229;
+  --gold: #e8b84b;
+  --gold2: #f7d87c;
+  --amber: #d4882a;
+  --rose: #e8547a;
+  --blush: #ff8fab;
+  --teal: #3dd6c8;
+  --cream: #fdf6e8;
+  --white: #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ─── CANVAS ─── */
+#fx { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+
+/* ─── CURTAIN / REVEAL SCREEN ─── */
+#curtain {
+  position: fixed; inset: 0; z-index: 500;
+  background: var(--black);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  transition: opacity 1.2s ease;
+}
+#curtain.gone { opacity: 0; pointer-events: none; }
+
+.curtain-pre {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 200;
+  font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 2.5rem;
+  animation: fadeIn 1s ease forwards;
+}
+
+.surprise-word {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(3rem, 12vw, 9rem);
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--gold), var(--rose), var(--gold2), var(--teal));
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradShift 3s ease infinite, scaleIn 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+}
+@keyframes gradShift {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.curtain-name {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(2rem, 7vw, 4.5rem);
+  color: var(--gold2);
+  margin-top: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards 1.2s;
+}
+
+.curtain-tap {
+  margin-top: 3rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  opacity: 0;
+  animation: fadeIn 1s ease forwards 2s, blink 2s ease-in-out infinite 2.5s;
+  cursor: pointer;
+}
+@keyframes blink {
+  0%,100% { opacity: 0.2; }
+  50% { opacity: 0.7; }
+}
+
+/* ─── STARFIELD ─── */
+#stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.s {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle var(--d) ease-in-out infinite var(--dl);
+}
+@keyframes twinkle {
+  0%,100% { opacity: 0.05; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* ─── FLOATING ORBS ─── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  animation: orbFloat var(--od) ease-in-out infinite alternate;
+}
+@keyframes orbFloat {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-40px) scale(1.1); }
+}
+
+/* ─── MAIN ─── */
+main { position: relative; z-index: 1; }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-badge {
+  font-size: 0.65rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(232,184,75,0.25);
+  padding: 0.45rem 1.4rem;
+  border-radius: 999px;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards 0.2s;
+  background: rgba(232,184,75,0.04);
+}
+
+.hero-eyebrow {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: rgba(253,246,232,0.5);
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards 0.4s;
+}
+
+.hero-name {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(4rem, 13vw, 10rem);
+  line-height: 1;
+  color: var(--white);
+  text-shadow: 0 0 60px rgba(232,184,75,0.4), 0 0 120px rgba(232,184,75,0.15);
+  opacity: 0;
+  animation: nameReveal 1.2s cubic-bezier(0.22,1,0.36,1) forwards 0.6s;
+  position: relative;
+  display: inline-block;
+}
+@keyframes nameReveal {
+  from { opacity: 0; transform: translateY(40px) scale(0.9); filter: blur(20px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.hero-surname {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: linear-gradient(90deg, var(--gold), var(--gold2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-top: 0.4rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards 1.2s;
+}
+
+.hero-title-line {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 3vw, 1.8rem);
+  color: rgba(253,246,232,0.6);
+  margin-top: 1.8rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards 1.5s;
+}
+
+/* date ring */
+.date-ring {
+  margin-top: 2.5rem;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 1px solid rgba(232,184,75,0.2);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0.2rem;
+  position: relative;
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards 1.8s;
+}
+.date-ring::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(232,184,75,0.15);
+}
+.date-ring-month {
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.date-ring-day {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: 300;
+  color: var(--white);
+  line-height: 1;
+}
+.date-ring-year {
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: rgba(253,246,232,0.3);
+}
+
+/* ─── BURST SECTION ─── */
+.burst-section {
+  padding: 5rem 2rem;
+  text-align: center;
+  position: relative;
+}
+.burst-section::before {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+  margin: 0 auto 3rem;
+}
+
+.burst-top {
+  font-size: 0.65rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 1.5rem;
+}
+
+.burst-headline {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+}
+.burst-headline .gold { color: var(--gold); }
+.burst-headline .rose { color: var(--rose); }
+
+.burst-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  color: rgba(253,246,232,0.55);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+/* ─── RIBBON ─── */
+.ribbon {
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 1.2rem 0;
+  background: linear-gradient(90deg, var(--gold), var(--amber));
+  margin: 4rem 0;
+  position: relative;
+}
+.ribbon-track {
+  display: inline-block;
+  animation: ribbonScroll 18s linear infinite;
+}
+.ribbon-item {
+  display: inline-block;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--black);
+  padding: 0 2.5rem;
+  text-transform: uppercase;
+}
+@keyframes ribbonScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ─── MESSAGE SECTION ─── */
+.message-section {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 4rem 2rem 6rem;
+  text-align: center;
+}
+
+.msg-icon { font-size: 3rem; margin-bottom: 2rem; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+
+.msg-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.25;
+  margin-bottom: 2.5rem;
+}
+.msg-heading em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.msg-body {
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 2;
+  color: rgba(253,246,232,0.65);
+}
+.msg-body strong {
+  font-weight: 700;
+  color: var(--gold2);
+}
+.msg-body .highlight {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.1em;
+  color: var(--blush);
+}
+
+/* ─── GIFT GRID ─── */
+.gifts-section {
+  padding: 4rem 2rem 6rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.gifts-heading {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  text-align: center;
+  color: var(--gold2);
+  margin-bottom: 3rem;
+}
+
+.gift-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.gift-card {
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  background: rgba(255,255,255,0.02);
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+  overflow: hidden;
+}
+.gift-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.gift-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(232,184,75,0.25);
+  background: rgba(232,184,75,0.04);
+}
+.gift-card:hover::before { opacity: 1; }
+
+.gift-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5rem;
+  font-weight: 300;
+  color: rgba(232,184,75,0.08);
+  position: absolute;
+  top: 0.5rem; right: 1.5rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.gift-emoji { font-size: 2.2rem; margin-bottom: 1rem; }
+.gift-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+.gift-desc {
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(253,246,232,0.5);
+}
+
+/* ─── FINALE ─── */
+.finale {
+  padding: 6rem 2rem 8rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.finale::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(232,184,75,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.finale-emoji { font-size: 5rem; margin-bottom: 2rem; animation: spin 6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.finale-big {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.5rem, 5vw, 3.5rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.finale-name-big {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(4rem, 14vw, 10rem);
+  background: linear-gradient(135deg, var(--gold), var(--rose), var(--teal), var(--gold2));
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradShift 4s ease infinite;
+  line-height: 1;
+  margin: 0.5rem 0;
+}
+.finale-line {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  color: rgba(253,246,232,0.5);
+  max-width: 500px;
+  margin: 1.5rem auto 3rem;
+  line-height: 1.8;
+}
+
+.burst-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 2.8rem;
+  background: linear-gradient(135deg, var(--gold), var(--amber));
+  color: var(--black);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 0 40px rgba(232,184,75,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.burst-btn:hover { transform: scale(1.06); box-shadow: 0 0 60px rgba(232,184,75,0.5); }
+.burst-btn:active { transform: scale(0.97); }
+
+/* ─── FOOTER ─── */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  text-align: center;
+  padding: 2.5rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: rgba(253,246,232,0.15);
+  text-transform: uppercase;
+}
+
+/* ─── UTILS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<canvas id="fx"></canvas>
+<div id="stars"></div>
+
+<!-- FLOATING ORBS -->
+<div class="orb" style="width:600px;height:600px;background:rgba(232,184,75,0.07);top:-200px;left:-200px;--od:8s;"></div>
+<div class="orb" style="width:500px;height:500px;background:rgba(232,84,122,0.06);bottom:-100px;right:-150px;--od:11s;"></div>
+<div class="orb" style="width:350px;height:350px;background:rgba(61,214,200,0.05);top:40%;left:55%;--od:9s;"></div>
+
+<!-- ═══ CURTAIN ═══ -->
+<div id="curtain">
+  <p class="curtain-pre">A very special message for</p>
+  <div class="surprise-word">SURPRISE!</div>
+  <div class="curtain-name">Charles Usakuhyel Blessing</div>
+  <div class="curtain-tap" id="tapCue" onclick="revealSite()">✦ Tap anywhere to open ✦</div>
+</div>
+
+<!-- ═══ MAIN SITE ═══ -->
+<main id="site" style="opacity:0;transition:opacity 1.2s ease 0.3s;">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">✦ June 2nd, 2026 ✦</div>
+    <p class="hero-eyebrow">Today is YOUR day</p>
+    <div class="hero-name">Charles</div>
+    <div class="hero-surname">Usakuhyel Blessing</div>
+    <p class="hero-title-line">The world has been waiting all year to celebrate you</p>
+    <div class="date-ring">
+      <div class="date-ring-month">June</div>
+      <div class="date-ring-day">02</div>
+      <div class="date-ring-year">2026</div>
+    </div>
+  </section>
+
+  <!-- BURST -->
+  <section class="burst-section reveal">
+    <p class="burst-top">✦ It has arrived ✦</p>
+    <h2 class="burst-headline">
+      <span class="gold">Happy</span><br>
+      <span class="rose">Birthday!</span>
+    </h2>
+    <p class="burst-sub">
+      Today the universe pauses, takes a deep breath,
+      and says — <em>thank you for being alive, Usakuhyel.</em>
+    </p>
+  </section>
+
+  <!-- RIBBON -->
+  <div class="ribbon" aria-hidden="true">
+    <div class="ribbon-track">
+      <span class="ribbon-item">Happy Birthday Usy</span>
+      <span class="ribbon-item">✦</span>
+      <span class="ribbon-item">June 2nd 2026</span>
+      <span class="ribbon-item">✦</span>
+      <span class="ribbon-item">Usakuhyel Blessing</span>
+      <span class="ribbon-item">✦</span>
+      <span class="ribbon-item">Celebrate in Style</span>
+      <span class="ribbon-item">✦</span>
+      <span class="ribbon-item">Happy Birthday Usy</span>
+      <span class="ribbon-item">✦</span>
+      <span class="ribbon-item">June 2nd 2026</span>
+      <span class="ribbon-item">✦</span>
+      <span class="ribbon-item">Usakuhyel Blessing</span>
+      <span class="ribbon-item">✦</span>
+      <span class="ribbon-item">Celebrate in Style</span>
+      <span class="ribbon-item">✦</span>
+    </div>
+  </div>
+
+  <!-- MESSAGE -->
+  <section class="message-section reveal">
+    <div class="msg-icon">💌</div>
+    <h2 class="msg-heading">
+      Dear <em>Usy</em>,<br>today is entirely yours.
+    </h2>
+    <p class="msg-body">
+      There are people in this world who walk into a room and make it feel different —
+      <span class="highlight">warmer, brighter, more alive.</span> You are one of those people.
+      <br><br>
+      <strong>Charles Usakuhyel Blessing</strong> — your name alone carries something special.
+      Today on your birthday, we celebrate not just the years you've lived, but the light
+      you carry, the laughs you spark, and the love you pour into everything you do.
+      <br><br>
+      This day belongs to you. <span class="highlight">Every second, every laugh, every song, every cake.</span>
+      Soak it all in. You've earned it, and then some. 🎂
+    </p>
+  </section>
+
+  <!-- GIFT GRID -->
+  <section class="gifts-section reveal">
+    <h2 class="gifts-heading">Reasons to Celebrate You</h2>
+    <div class="gift-grid">
+      <div class="gift-card">
+        <span class="gift-num">01</span>
+        <div class="gift-emoji">✨</div>
+        <div class="gift-title">Your Presence</div>
+        <div class="gift-desc">There is no one quite like Usy. Your energy is unmistakable and completely unforgettable.</div>
+      </div>
+      <div class="gift-card">
+        <span class="gift-num">02</span>
+        <div class="gift-emoji">🌊</div>
+        <div class="gift-title">Your Depth</div>
+        <div class="gift-desc">Every conversation with you goes somewhere real. You think deeply, feel deeply, and connect deeply.</div>
+      </div>
+      <div class="gift-card">
+        <span class="gift-num">03</span>
+        <div class="gift-emoji">🔥</div>
+        <div class="gift-title">Your Drive</div>
+        <div class="gift-desc">You bring a relentless fire to everything you pursue. That ambition is something rare and beautiful.</div>
+      </div>
+      <div class="gift-card">
+        <span class="gift-num">04</span>
+        <div class="gift-emoji">🌻</div>
+        <div class="gift-title">Your Joy</div>
+        <div class="gift-desc">Your laughter is a gift. The happiness you share ripples outward to everyone lucky enough to know you.</div>
+      </div>
+      <div class="gift-card">
+        <span class="gift-num">05</span>
+        <div class="gift-emoji">💎</div>
+        <div class="gift-title">Your Integrity</div>
+        <div class="gift-desc">You show up fully, honestly, and generously. The world needs more people who are as real as you are.</div>
+      </div>
+      <div class="gift-card">
+        <span class="gift-num">06</span>
+        <div class="gift-emoji">🎯</div>
+        <div class="gift-title">Your Future</div>
+        <div class="gift-desc">The best chapters of your story are still being written. And they are going to be extraordinary.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINALE -->
+  <section class="finale reveal">
+    <div class="finale-emoji">🎂</div>
+    <div class="finale-big">With all the love in the world —</div>
+    <div class="finale-name-big">Happy Birthday</div>
+    <div class="finale-big" style="color:var(--gold)">Charles!</div>
+    <p class="finale-line">
+      May this year bring you everything your heart is reaching for —
+      and surprises even better than you imagined.
+    </p>
+    <button class="burst-btn" onclick="bigBurst()">🎊 Celebrate!</button>
+  </section>
+
+  <footer>Made with love · For Charles Usakuhyel Blessing · June 2, 2026</footer>
+</main>
+
+<script>
+// ─── STARS ───
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 150; i++) {
+  const el = document.createElement('div');
+  el.className = 's';
+  const sz = Math.random() * 2.5 + 0.5;
+  el.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*4+2).toFixed(1)}s;--dl:-${(Math.random()*6).toFixed(1)}s;`;
+  starsEl.appendChild(el);
+}
+
+// ─── CONFETTI ENGINE ───
+const canvas = document.getElementById('fx');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let rafId = null;
+
+function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+resize();
+addEventListener('resize', resize);
+
+const COLS = ['#e8b84b','#f7d87c','#e8547a','#ff8fab','#3dd6c8','#fdf6e8','#d4882a','#ffffff','#ffe87a'];
+const SHAPES = ['rect','circle','tri'];
+
+function mkParticle(x, y, spread=12) {
+  return {
+    x, y,
+    vx: (Math.random()-.5)*spread,
+    vy: Math.random()*-15 - 5,
+    r: Math.random()*7+3,
+    color: COLS[Math.floor(Math.random()*COLS.length)],
+    rot: Math.random()*Math.PI*2,
+    rotV: (Math.random()-.5)*0.25,
+    shape: SHAPES[Math.floor(Math.random()*SHAPES.length)],
+    grav: 0.28+Math.random()*0.15,
+    alpha: 1,
+    drag: 0.985
+  };
+}
+
+function mkFountain(x, y, n, spread) {
+  for (let i=0; i<n; i++) particles.push(mkParticle(x, y, spread));
+  if (!rafId) tick();
+}
+
+function tick() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles = particles.filter(p => p.alpha > 0.01);
+  for (const p of particles) {
+    p.vy += p.grav;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vx *= p.drag;
+    p.rot += p.rotV;
+    if (p.y > canvas.height * 0.88) p.alpha -= 0.025;
+
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.alpha);
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.fillStyle = p.color;
+    if (p.shape==='rect') {
+      ctx.fillRect(-p.r, -p.r*.45, p.r*2, p.r*.9);
+    } else if (p.shape==='circle') {
+      ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(0,-p.r); ctx.lineTo(p.r, p.r); ctx.lineTo(-p.r, p.r);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+  if (particles.length > 0) rafId = requestAnimationFrame(tick);
+  else { rafId = null; ctx.clearRect(0,0,canvas.width,canvas.height); }
+}
+
+function bigBurst() {
+  const cx = canvas.width/2, cy = canvas.height*0.55;
+  for (let i=0; i<300; i++) {
+    const angle = Math.random()*Math.PI*2;
+    const speed = Math.random()*16+4;
+    const p = mkParticle(cx, cy, 0);
+    p.vx = Math.cos(angle)*speed;
+    p.vy = Math.sin(angle)*speed - 8;
+    p.grav = 0.2+Math.random()*0.15;
+    particles.push(p);
+  }
+  if (!rafId) tick();
+}
+
+// ─── CURTAIN ───
+let revealed = false;
+function revealSite() {
+  if (revealed) return;
+  revealed = true;
+  // launch initial burst
+  setTimeout(() => mkFountain(canvas.width/2, canvas.height*0.4, 220, 14), 400);
+  setTimeout(() => mkFountain(canvas.width*0.2, canvas.height*0.3, 80, 10), 700);
+  setTimeout(() => mkFountain(canvas.width*0.8, canvas.height*0.3, 80, 10), 700);
+  document.getElementById('curtain').classList.add('gone');
+  const site = document.getElementById('site');
+  site.style.opacity = '1';
+  // second wave
+  setTimeout(() => mkFountain(canvas.width/2, canvas.height*0.5, 120, 12), 2000);
+}
+
+document.getElementById('curtain').addEventListener('click', revealSite);
+// auto-reveal tap cue after 1.5s
+setTimeout(() => {
+  document.getElementById('tapCue').style.opacity = '0.4';
+}, 1500);
+
+// ─── SCROLL REVEAL ───
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }});
+}, { threshold: 0.12 });
+revealEls.forEach(el => io.observe(el));
+
+// ─── AMBIENT SPARKLES on scroll ───
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > lastScroll + 60 && revealed) {
+    mkFountain(Math.random()*canvas.width, Math.random()*canvas.height*0.8, 18, 6);
+    lastScroll = y;
+  }
+});
+</script>
+</body>
+</html>
